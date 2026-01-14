@@ -1,0 +1,79 @@
+<div class="order-detail-container">
+  <div class="header">
+    <h1>Detalhes do Pedido</h1>
+    <button class="btn btn-secondary" (click)="goBack()">← Voltar</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando detalhes...</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error && order" class="order-details">
+    <div class="info-card">
+      <h2>Informações do Pedido</h2>
+      <div class="info-row">
+        <span class="label">ID do Pedido:</span>
+        <span class="value">{{ order.id }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">ID do Cliente:</span>
+        <span class="value">{{ order.customerId }}</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Status Atual:</span>
+        <span class="value">
+          <span class="status-badge" [ngClass]="'status-' + order.status">
+            {{ getStatusText(order.status) }}
+          </span>
+        </span>
+      </div>
+      <div *ngIf="order.createdAt" class="info-row">
+        <span class="label">Data de Criação:</span>
+        <span class="value">{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
+
+    <div class="update-status-card">
+      <h2>Atualizar Status</h2>
+      <div class="status-update-form">
+        <label for="status">Novo Status:</label>
+        <select id="status" [(ngModel)]="selectedStatus" class="form-select">
+          <option *ngFor="let option of statusOptions" [ngValue]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        <button class="btn btn-primary" (click)="updateStatus()">Atualizar Status</button>
+      </div>
+    </div>
+
+    <div class="items-card">
+      <h2>Itens do Pedido</h2>
+      <div *ngIf="!order.items || order.items.length === 0" class="no-items">
+        Nenhum item neste pedido.
+      </div>
+      <table *ngIf="order.items && order.items.length > 0" class="items-table">
+        <thead>
+          <tr>
+            <th>ID do Produto</th>
+            <th>Nome do Produto</th>
+            <th>Quantidade</th>
+            <th *ngIf="order.items[0].unitPrice">Preço Unitário</th>
+            <th *ngIf="order.items[0].totalPrice">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of order.items">
+            <td>{{ item.productId.substring(0, 8) }}...</td>
+            <td>{{ item.productName || 'N/A' }}</td>
+            <td>{{ item.quantity }}</td>
+            <td *ngIf="item.unitPrice">R$ {{ item.unitPrice.toFixed(2) }}</td>
+            <td *ngIf="item.totalPrice">R$ {{ item.totalPrice.toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div *ngIf="order.totalAmount" class="total-amount">
+        <strong>Total do Pedido:</strong> R$ {{ order.totalAmount.toFixed(2) }}
+      </div>
+    </div>
+  </div>
+</div>

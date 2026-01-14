@@ -1,0 +1,91 @@
+<div class="order-form-container">
+  <div class="header">
+    <h1>Novo Pedido</h1>
+    <button class="btn btn-secondary" (click)="cancel()">← Voltar</button>
+  </div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="form-card">
+    <h2>Informações do Cliente</h2>
+    <div class="form-group">
+      <label for="customerId">ID do Cliente:</label>
+      <input
+        type="text"
+        id="customerId"
+        [(ngModel)]="customerId"
+        class="form-input"
+        readonly
+        style="background-color: #f0f0f0; cursor: not-allowed;"
+      />
+      <small class="hint">ID fixo para aprendizado</small>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h2>Adicionar Itens</h2>
+    <div class="add-item-form">
+      <div class="form-group">
+        <label for="productId">Produto:</label>
+        <select
+          id="productId"
+          [(ngModel)]="newItem.productId"
+          class="form-select"
+        >
+          <option value="">Selecione um produto</option>
+          <option *ngFor="let product of products" [value]="product.id">
+            {{ product.name }} - R$ {{ product.price?.toFixed(2) }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">Quantidade:</label>
+        <input
+          type="number"
+          id="quantity"
+          [(ngModel)]="newItem.quantity"
+          class="form-input"
+          min="1"
+        />
+      </div>
+
+      <button class="btn btn-success" (click)="addItem()">+ Adicionar Item</button>
+    </div>
+
+    <div *ngIf="orderItems.length > 0" class="items-list">
+      <h3>Itens do Pedido</h3>
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of orderItems; let i = index">
+            <td>{{ getProductName(item.productId) }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+              <button class="btn btn-danger btn-small" (click)="removeItem(i)">Remover</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="orderItems.length === 0" class="no-items">
+      Nenhum item adicionado ainda. Adicione produtos ao pedido acima.
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" (click)="createOrder()" [disabled]="loading">
+      {{ loading ? 'Criando...' : 'Criar Pedido' }}
+    </button>
+    <button class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+      Cancelar
+    </button>
+  </div>
+</div>

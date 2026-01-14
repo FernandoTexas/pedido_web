@@ -1,0 +1,44 @@
+<div class="order-list-container">
+  <div class="header">
+    <h1>Lista de Pedidos</h1>
+    <button class="btn btn-primary" routerLink="/orders/new">+ Novo Pedido</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando pedidos...</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error" class="orders-container">
+    <div *ngIf="orders.length === 0" class="no-orders">
+      Nenhum pedido encontrado. Crie seu primeiro pedido!
+    </div>
+
+    <table *ngIf="orders.length > 0" class="orders-table">
+      <thead>
+        <tr>
+          <th>ID do Pedido</th>
+          <th>ID do Cliente</th>
+          <th>Status</th>
+          <th>Itens</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{ order.id.substring(0, 8) }}...</td>
+          <td>{{ order.customerId.substring(0, 8) }}...</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(order.status)">
+              {{ getStatusText(order.status) }}
+            </span>
+          </td>
+          <td>{{ order.items?.length || 0 }} item(s)</td>
+          <td class="actions">
+            <button class="btn btn-info" (click)="viewDetails(order.id)">Ver Detalhes</button>
+            <button class="btn btn-danger" (click)="deleteOrder(order.id)">Remover</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
